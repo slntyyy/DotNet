@@ -79,7 +79,7 @@ namespace AliTrade
     }
     #endregion
 
-    partial class TbkOrderDetailsQueryRequest : BaseTaeRequest<TbkOrderDetailsQueryResponse>
+    public class TbkOrderDetailsQueryRequest : BaseTaeRequest<TbkOrderDetailsQueryResponse>
     {
         public DateTime start_time { get; set; }
         public DateTime end_time { get; set; }

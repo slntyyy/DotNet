@@ -22,7 +22,7 @@ namespace AliTradeLib
     }
 
     #region taobao.tbk.order.details.get
-    partial class TbkOrderDetailsQueryResponse : TaeResponse
+    public class TbkOrderDetailsQueryResponse : TaeResponse
     {
         public TbkOrderDetailsQueryData data { get; set; }
     }
