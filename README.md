@@ -23,3 +23,5 @@ git push origin master
 git branch -r
 git log --oneline --decorate --graph 
 ```
+
+git commit -a
