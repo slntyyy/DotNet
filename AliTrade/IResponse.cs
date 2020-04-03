@@ -144,6 +144,10 @@ namespace AliTrade
         /// 渠道关系id
         /// </summary>
         public long relation_id { get; set; }
+        /// <summary>
+        /// 推广位管理下的推广位名称对应的ID，同时也是pid=mm_1_2_3中的“3”这段数字
+        /// </summary>
+        public long adzone_id { get; set; }
     }
     #endregion
 

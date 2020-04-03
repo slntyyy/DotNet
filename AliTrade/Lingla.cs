@@ -15,6 +15,7 @@ namespace AliTrade
         private static string taeUrl = "http://tae.liqu.com/api/Client/Tae";
         private const string app_key = "24526511";
         private const string app_secret = "b90a00845698ab39e500d2a705161927";
+        private const long adzoneId = 109039050005L;
         private const string SIGN_METHOD_MD5 = "md5";
         private static string MD5(string s, Encoding e)
         {
@@ -125,13 +126,73 @@ namespace AliTrade
             return rsp;
         }
 
-        public TbkOrderDetailsQueryData GetTbkOrderDetails(DateTime dt, int query_type = 1, string position_index = "", int page_no = 1, int page_size = 100)
+        /// <summary>
+        /// 获取联盟订单
+        /// </summary>
+        /// <param name="action">事务</param>
+        /// <param name="dt">查询时间（向前查询20分钟）；对应quertype的时间</param>
+        /// <param name="query_type">1：下单状态；3：结算状态</param>
+        /// <returns></returns>
+        public void GetQueryTrade(Action<TbkOrderDetailsQueryResult> action, DateTime dt, int query_type = 1)
         {
             var start_time = dt.AddMinutes(-20);
             var end_time = dt;
             var tk_status = 0;
-            //if (query_type == 3) tk_status = 3;
-            return GetTbkOrderDetails(start_time, end_time, tk_status, query_type, 0, 1, 1, position_index, page_no, page_size);
+            var position_index = "";
+            var page = 1;
+            while (true)
+            {
+                var dataResult = GetTbkOrderDetails(start_time, end_time, tk_status, query_type, 0, 1, 1, position_index, page, 100);
+                if (dataResult == null || dataResult.results == null || dataResult.results.Count == 0)
+                    break;
+                foreach (var item in dataResult.results)
+                {
+                    if (item.adzone_id == adzoneId)
+                    {
+                        action.Invoke(item);
+                    }
+                }
+                position_index = dataResult.position_index;
+                page++;
+                if (!dataResult.has_next)
+                {
+                    break;
+                }
+            }
+        }
+        /// <summary>
+        /// 获取联盟订单
+        /// </summary>
+        /// <param name="dt">查询时间（向前查询20分钟）；对应quertype的时间</param>
+        /// <param name="query_type">1：下单状态；3：结算状态</param>
+        /// <returns></returns>
+        public List<TbkOrderDetailsQueryResult> GetQueryTrade(DateTime dt, int query_type = 1)
+        {
+            var result = new List<TbkOrderDetailsQueryResult>();
+            var start_time = dt.AddMinutes(-20); var end_time = dt;
+            var tk_status = 0;
+            var position_index = "";
+            var page = 1;
+            while (true)
+            {
+                var dataResult = GetTbkOrderDetails(start_time, end_time, tk_status, query_type, 0, 1, 1, position_index, page, 100);
+                if (dataResult == null || dataResult.results == null || dataResult.results.Count == 0)
+                    break;
+                foreach (var item in dataResult.results)
+                {
+                    if (item.adzone_id == adzoneId)
+                    {
+                        result.Add(item);
+                    }
+                }
+                position_index = dataResult.position_index;
+                page++;
+                if (!dataResult.has_next)
+                {
+                    break;
+                }
+            }
+            return result;
         }
         public TbkOrderDetailsQueryData GetTbkOrderDetails(DateTime start_time, DateTime end_time, int tk_status = 0,
                 int query_type = 1, string position_index = "", int page_no = 1, int page_size = 100)
