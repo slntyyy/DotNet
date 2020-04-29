@@ -55,6 +55,10 @@ namespace AliTrade
         /// </summary>
         public DateTime tk_create_time { get; set; }
         /// <summary>
+        /// 订单付款的时间，该时间同步淘宝，可能会略晚于买家在淘宝的订单创建时间
+        /// </summary>
+        public DateTime? tk_paid_time { get; set; }
+        /// <summary>
         /// 单确认收货后且商家完成佣金支付的时间
         /// </summary>
         public DateTime? tk_earning_time { get; set; }

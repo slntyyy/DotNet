@@ -15,7 +15,7 @@ namespace AliTrade
         private static string taeUrl = "http://tae.liqu.com/api/Client/Tae";
         private const string app_key = "24526511";
         private const string app_secret = "b90a00845698ab39e500d2a705161927";
-        private const long adzoneId = 109039050005L;
+        private const long adzoneId = 216968386L;
         private const string SIGN_METHOD_MD5 = "md5";
         private static string MD5(string s, Encoding e)
         {
