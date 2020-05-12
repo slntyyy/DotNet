@@ -12,6 +12,8 @@ dotnet run
 dotnet add referennce ../{test}.csproj
 dotnet add package Newtonsoft.json
 dotnet new classlib
+
+skiplist
 ```
 # git 
 ## git method 
@@ -41,3 +43,9 @@ docker ps
 docker exec IMAGE_NAMES ipconfig
 
 ## dockerfile
+
+# redis
+## redis set bitmap 位移工具 用于或且关系数据类型
+
+# vue
+## vue run bulid

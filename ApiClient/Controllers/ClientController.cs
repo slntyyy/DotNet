@@ -20,8 +20,8 @@ namespace ApiClient.Controllers
     [Route("api/[controller]")]
     public class ClientController : ControllerBase
     {
-        private readonly ILogger<WeatherForecastController> _logger;
-        public ClientController(ILogger<WeatherForecastController> logger)
+        private readonly ILogger<ClientController> _logger;
+        public ClientController(ILogger<ClientController> logger)
         {
             _logger = logger;
         }
