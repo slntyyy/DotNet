@@ -6,7 +6,7 @@ namespace QRServer
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
 
             // Initialize log manager.
