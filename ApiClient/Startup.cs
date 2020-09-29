@@ -13,17 +13,19 @@ namespace ApiClient
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+        public string WebTitle { get; set; }
+        public string DefAllowSpecificOrigins { get; set; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            WebTitle = Configuration["WebTitle"];
+            DefAllowSpecificOrigins = Configuration["DefAllowSpecificOrigins"];
         }
-        readonly string DefAllowSpecificOrigins = "_LQAllowSpecificOrigins";
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // 注册数据库上下文
             services.AddControllers()
                 .AddXmlSerializerFormatters()
                 .AddNewtonsoftJson()
@@ -32,7 +34,6 @@ namespace ApiClient
                     // Use the default property (Pascal) casing.
                     options.JsonSerializerOptions.PropertyNamingPolicy = null;
                     options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
-
                     //options.JsonSerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
                 });
 
@@ -41,22 +42,22 @@ namespace ApiClient
                {
                    c.SwaggerDoc("v1", new OpenApiInfo
                    {
-                       Title = "LQ Client API",
+                       Title = $"{WebTitle} Client API",
                        Version = "v1",
 
-                       //    Description = "A simple example ASP.NET Core Web API",
-                       //    TermsOfService = new Uri("https://example.com/terms"),
-                       //    Contact = new OpenApiContact
-                       //    {
-                       //        Name = "Shayne Boyer",
-                       //        Email = string.Empty,
-                       //        Url = new Uri("https://twitter.com/spboyer"),
-                       //    },
-                       //    License = new OpenApiLicense
-                       //    {
-                       //        Name = "Use under LICX",
-                       //        Url = new Uri("https://example.com/license"),
-                       //    }
+                       Description = "A simple example ASP.NET Core Web API",
+                       TermsOfService = new Uri("https://slnty.com/terms"),
+                       Contact = new OpenApiContact
+                       {
+                           Name = "slnty lee",
+                           Email = string.Empty,
+                           Url = new Uri("https://twitter.com/slntyyy"),
+                       },
+                       License = new OpenApiLicense
+                       {
+                           Name = "",
+                           Url = new Uri("https://slnty.com/license"),
+                       }
                    });
                    c.OrderActionsBy(o => o.RelativePath);
                    // Set the comments path for the Swagger JSON and UI.
@@ -65,12 +66,13 @@ namespace ApiClient
                    c.IncludeXmlComments(xmlPath);
                });
 
+            var AllowedHosts = Configuration["AllowedHosts"];
             services.AddCors(options =>
             {
                 options.AddPolicy(DefAllowSpecificOrigins,
                 builder =>
                 {
-                    builder.WithOrigins("http://*.liqu.com")
+                    builder.WithOrigins(AllowedHosts)
                         .SetIsOriginAllowedToAllowWildcardSubdomains()
                         .AllowAnyHeader()
                         .AllowAnyMethod();
@@ -85,6 +87,11 @@ namespace ApiClient
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                Console.WriteLine("Development");
+            }
+            if (env.IsProduction())
+            {
+                Console.WriteLine("Production");
             }
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
@@ -92,14 +99,11 @@ namespace ApiClient
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "LQ Client API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", $"{WebTitle} Client API V1");
                 c.RoutePrefix = string.Empty;
-
                 c.InjectStylesheet("/swagger/ui/custom.css");
                 c.InjectJavascript("/swagger/ui/custom.js");
-
             });
-
 
             app.UseDefaultFiles();
             app.UseStaticFiles();

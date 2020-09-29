@@ -10,6 +10,7 @@ using ApiClient.Controllers.Models.Request;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using QRCoder;
 using System.Drawing;
 using System.IO;
@@ -21,9 +22,11 @@ namespace ApiClient.Controllers
     public class ClientController : ControllerBase
     {
         private readonly ILogger<ClientController> _logger;
-        public ClientController(ILogger<ClientController> logger)
+        private readonly IConfiguration _configuration;
+        public ClientController(ILogger<ClientController> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -40,15 +43,14 @@ namespace ApiClient.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> TaeClient([FromBody]TaeRequest request)
+        public async Task<IActionResult> TaeClient([FromBody] TaeRequest request)
         {
             if (request == null || request.Body.Count <= 0)
             {
                 return NotFound();
             }
-
-            var appkey = "23363435";
-            var secret = "145d10563c369cc0bda14f81124c0c1c";
+            var appkey = _configuration["appkey"];
+            var secret = _configuration["secret"];
             var url = "https://eco.taobao.com/router/rest";
             if (request.Body.ContainsKey("appkey"))
             {

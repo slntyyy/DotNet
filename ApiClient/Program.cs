@@ -15,6 +15,7 @@ namespace ApiClient
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    //webBuilder.UseUrls("http://*:8239");
                     //webBuilder.UseKestrel(options => options.AddServerHeader = false);
                 });
     }
